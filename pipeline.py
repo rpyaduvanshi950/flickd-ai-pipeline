@@ -9,8 +9,10 @@ from components.product_matcher import ProductMatcher
 from components.frame_extractor import extract_frames
 import json
 
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) 
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'

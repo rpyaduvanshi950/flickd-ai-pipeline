@@ -106,6 +106,30 @@ curl -X POST http://localhost:5000/analyze \
 - The first run may be slow as it downloads models and computes catalog embeddings.
 - For production, set `debug=False` in `pipeline.py`.
 
+## Frontend Web Application
+A modern React + MUI frontend is available in the `frontend-flickd` directory.
+
+### How to Run the Frontend
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend-flickd
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173` (or as shown in your terminal).
+
+### How it Connects
+- The frontend communicates with the backend Flask API at `http://localhost:5000/analyze`.
+- Make sure the backend is running before using the frontend.
+
+For more details, see `frontend-flickd/README.md`.
+
 ---
 
 *For questions or contributions, please open an issue or pull request.* 
