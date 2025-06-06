@@ -1,7 +1,15 @@
 # Flickd AI Pipeline
 
 ## Overview
-Flickd AI Pipeline is an end-to-end system for analyzing fashion videos. It detects the overall "vibe" (style) of a video and matches visible products to a catalog using state-of-the-art vision-language models. The pipeline is designed for fashion discovery, trend analysis, and product recommendation from user-uploaded videos.
+Flickd AI Pipeline is an end-to-end system for analyzing fashion videos. The pipeline enables users to upload a video and receive a detailed analysis of the fashion "vibes" (styles) present, as well as matched products from a catalog. It leverages state-of-the-art vision-language models to automate fashion discovery, trend analysis, and product recommendation from user-uploaded videos.
+
+**Pipeline Steps:**
+1. **Frame Extraction:** The system extracts up to 15 key frames from the uploaded video (typically 1 frame per second) using OpenCV, ensuring efficient and representative sampling.
+2. **Vibe Detection:** Each frame is analyzed using the CLIP model, which computes embeddings and compares them to a curated list of fashion style prompts. The top 3 most relevant vibes (e.g., "streetwear", "minimal", "retro") are predicted for the video.
+3. **Product Detection:** OWL-ViT, a vision transformer model, detects fashion items (categories) in each frame. Detected objects are cropped for further analysis.
+4. **Product Matching:** Each detected item is embedded using CLIP and matched to the closest product in the catalog (using cosine similarity). The system returns up to 4 matched products per video, including type, color, match type (exact/similar), and confidence score.
+
+The pipeline is designed for seamless integration with a modern web frontend, providing a user-friendly experience for fashion video analysis.
 
 ## Features
 - **Video Upload & Analysis**: Upload a video and receive detected vibes and matched products.
@@ -28,6 +36,16 @@ Flickd AI Pipeline is an end-to-end system for analyzing fashion videos. It dete
 ├── catalog.csv              # Product catalog
 ├── images.csv               # Product image URLs
 ├── vibes_list.json          # List of supported vibes/styles
+├── flickd-frontend/         # Modern Next.js (App Router, TypeScript, Tailwind, Radix UI) frontend
+│   ├── src/
+│   │   ├── app/             # Next.js App Router entry (layout, page, etc.)
+│   │   ├── components/      # Modular UI components (upload, display, etc.)
+│   │   └── ...
+│   ├── public/
+│   ├── tailwind.config.ts   # Tailwind theme and config
+│   ├── next.config.ts       # Next.js config
+│   ├── package.json
+│   └── README.md
 ```
 
 ## Setup Instructions
@@ -107,12 +125,12 @@ curl -X POST http://localhost:5000/analyze \
 - For production, set `debug=False` in `pipeline.py`.
 
 ## Frontend Web Application
-A modern React + MUI frontend is available in the `frontend-flickd` directory.
+A modern **Next.js (App Router, TypeScript, Tailwind CSS, Radix UI)** frontend is available in the `flickd-frontend` directory.
 
 ### How to Run the Frontend
 1. Navigate to the frontend directory:
    ```bash
-   cd frontend-flickd
+   cd flickd-frontend
    ```
 2. Install dependencies:
    ```bash
@@ -122,13 +140,14 @@ A modern React + MUI frontend is available in the `frontend-flickd` directory.
    ```bash
    npm run dev
    ```
-   The app will be available at `http://localhost:5173` (or as shown in your terminal).
+   The app will be available at `http://localhost:9002` (or as shown in your terminal).
 
 ### How it Connects
 - The frontend communicates with the backend Flask API at `http://localhost:5000/analyze`.
 - Make sure the backend is running before using the frontend.
 
-For more details, see `frontend-flickd/README.md`.
+- The frontend is modular, extensible, and uses accessible, composable UI primitives (Radix UI) and utility-first styling (Tailwind CSS).
+- For more details, see `flickd-frontend/README.md`.
 
 ---
 
