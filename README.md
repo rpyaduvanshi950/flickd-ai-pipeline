@@ -149,6 +149,20 @@ A modern **Next.js (App Router, TypeScript, Tailwind CSS, Radix UI)** frontend i
 - The frontend is modular, extensible, and uses accessible, composable UI primitives (Radix UI) and utility-first styling (Tailwind CSS).
 - For more details, see `flickd-frontend/README.md`.
 
+### Example Frontend Screenshots
+
+**Entry View (Upload a Video):**
+
+![Frontend Entry View](images/frontend_first.png)
+
+*The entry screen where users upload a fashion video for analysis.*
+
+**Results View (Analysis Results):**
+
+![Frontend Results View](images/frontend_results.png)
+
+*The results screen showing detected vibes and matched products after analysis.*
+
 ---
 
 *For questions or contributions, please open an issue or pull request.* 

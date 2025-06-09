@@ -66,9 +66,18 @@ flickd-frontend/
 - **Accessible by default**: Radix UI ensures keyboard and screen reader support.
 
 ## Example Screenshots
-> _Add screenshots here_
-- ![Upload & Preview](./screenshots/upload-preview.png)
-- ![Analysis Results](./screenshots/analysis-results.png)
+
+**Upload & Preview View:**
+
+![Upload & Preview](../images/frontend_first.png)
+
+*The entry screen where users upload and preview a fashion video before analysis.*
+
+**Analysis Results View:**
+
+![Analysis Results](../images/frontend_results.png)
+
+*The results screen showing detected vibes and matched products after analysis.*
 
 ## Contributing
 Pull requests and suggestions are welcome! For major changes, please open an issue first.
