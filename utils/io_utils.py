@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 from configs.paths import OUTPUT_DIR
 
+# Convert numpy types and arrays to native Python types for JSON serialization
 def convert_to_serializable(obj):
     """Convert numpy types to native Python types for JSON serialization"""
     if isinstance(obj, (np.int32, np.int64)):
@@ -17,6 +18,7 @@ def convert_to_serializable(obj):
         return {key: convert_to_serializable(value) for key, value in obj.items()}
     return obj
 
+# Save the pipeline output (video_id, vibes, products) to a JSON file
 def save_output(video_id: str, vibes: list, products: list):
     """Save pipeline output to JSON file"""
     output_path = Path(OUTPUT_DIR) / f"{video_id}.json"

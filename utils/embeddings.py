@@ -10,6 +10,8 @@ import os
 from transformers import CLIPProcessor, CLIPModel
 from tqdm import tqdm
 
+# Utility to download an image from a URL, returns a PIL Image
+# Returns a blank image if download fails
 def download_image(url: str) -> Image.Image:
     try:
         response = requests.get(url, timeout=10)
@@ -19,13 +21,14 @@ def download_image(url: str) -> Image.Image:
         print(f"Error downloading image: {str(e)}")
         return Image.new('RGB', (224, 224), color='black')
 
+# Loads the product catalog and precomputed embeddings (or generates them if missing)
 def load_catalog_embeddings():
-    # Load and merge data
+    # Load and merge catalog and image data
     catalog = pd.read_csv(CATALOG_PATH)
     images_df = pd.read_csv(IMAGES_PATH)
     catalog = catalog.merge(images_df, on='id', how='left')
     
-    # Verify required columns
+    # Ensure required columns are present (rename if needed)
     required_columns = ['product_id', 'shopify_cdn_url', 'category', 'color']
     if not all(col in catalog.columns for col in required_columns):
         catalog = catalog.rename(columns={
@@ -35,24 +38,26 @@ def load_catalog_embeddings():
             'image_url': 'shopify_cdn_url'
         })
     
-    # Check for missing data
+    # Warn if any products are missing image URLs
     missing_images = catalog[catalog['shopify_cdn_url'].isna()]
     if not missing_images.empty:
         print(f"Warning: {len(missing_images)} products missing image URLs")
 
+    # Path to save/load catalog embeddings
     embeddings_path = EMBEDDINGS_DIR / "catalog_embeddings.pt"
     os.makedirs(EMBEDDINGS_DIR, exist_ok=True)
     
+    # Load precomputed embeddings if available
     if embeddings_path.exists():
         print("Loading precomputed embeddings...")
         return catalog, torch.load(embeddings_path)
 
-    # Initialize CLIP
+    # Initialize CLIP model for embedding generation
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = CLIPModel.from_pretrained(CLIP_VERSION).to(device)
     processor = CLIPProcessor.from_pretrained(CLIP_VERSION)
     
-    # Generate embeddings
+    # Generate embeddings for each product image
     embeddings = []
     for idx, row in tqdm(catalog.iterrows(), total=len(catalog), desc="Generating embeddings"):
         try:
@@ -65,6 +70,7 @@ def load_catalog_embeddings():
             print(f"Error processing {row.get('product_id', idx)}: {str(e)}")
             embeddings.append(torch.zeros(1, 512))
     
+    # Concatenate and save embeddings
     embeddings = torch.cat(embeddings)
     torch.save(embeddings, embeddings_path)
     return catalog, embeddings
